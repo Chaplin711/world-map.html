@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Interactive World Map</title>
+<style>
+  body {
+    font-family: Arial;
+    text-align: center;
+    background: #eef6fb;
+  }
+  #map {
+    position: relative;
+    display: inline-block;
+  }
+  img {
+    width: 1000px;
+    border: 2px solid #333;
+  }
+  .label {
+    position: absolute;
+    background: yellow;
+    padding: 3px 6px;
+    border-radius: 5px;
+    cursor: move;
+    font-size: 12px;
+  }
+  button {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🌍 Interactive World Map Labeling Tool</h1>
+
+<p>Click anywhere on the map to add a label (oceans, continents, rivers, etc.)</p>
+
+<button onclick="clearLabels()">Clear All Labels</button>
+
+<div id="map">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg" id="mapImage">
+</div>
+
+<script>
+const map = document.getElementById("map");
+
+map.addEventListener("click", function(e) {
+    const text = prompt("Enter label (Ocean, River, Continent, etc.):");
+    if (!text) return;
+
+    const label = document.createElement("div");
+    label.className = "label";
+    label.innerText = text;
+
+    label.style.left = (e.offsetX) + "px";
+    label.style.top = (e.offsetY) + "px";
+
+    makeDraggable(label);
+    map.appendChild(label);
+});
+
+function makeDraggable(el) {
+    let offsetX, offsetY;
+
+    el.onmousedown = function(e) {
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+
+        document.onmousemove = function(e) {
+            el.style.left = (e.pageX - map.offsetLeft - offsetX) + "px";
+            el.style.top = (e.pageY - map.offsetTop - offsetY) + "px";
+        };
+
+        document.onmouseup = function() {
+            document.onmousemove = null;
+        };
+    };
+}
+
+function clearLabels() {
+    document.querySelectorAll(".label").forEach(el => el.remove());
+}
+</script>
+
+</body>
+</html>
